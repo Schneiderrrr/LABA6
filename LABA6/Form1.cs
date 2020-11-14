@@ -14,18 +14,19 @@ namespace LABA6
     public partial class Form1 : Form
     {
         Graphics gra;
-        Pen pen;
+        Pen pen, pentemp;
         public Form1()
         {
             InitializeComponent();
             gra = Drawing.CreateGraphics();
             pen = new Pen(Color.Black, 5);
+            pentemp = new Pen(Color.White, 5);
         }
 
 
         public class CCircle
         {
-            public GraphicsPath circlepath = new GraphicsPath();
+            public GraphicsPath circlepath;
             public Pen circlepen;
             public int x, y, rad;
             public double hit;
@@ -36,20 +37,22 @@ namespace LABA6
                 this.x = Cursor.Position.X;
                 this.y = Cursor.Position.Y;
                 this.rad = 200;
+                circlepen = new Pen(Color.White, 5);
+                circlepath = new GraphicsPath();
             }
 
-            public void DrawCircle(Graphics g, Pen penc)
+            public void DrawCircle(Graphics g, Color penc)
             {
-                this.circlepen = penc;
+                this.circlepen.Color = penc;
                 this.xc = this.x - rad;
                 this.yc = this.y - rad;
-                circlepath.AddEllipse(this.xc, this.yc, this.rad, this.rad);
-                g.DrawPath(penc, circlepath);
+                this.circlepath.AddEllipse(this.xc, this.yc, this.rad, this.rad);
+                g.DrawPath(this.circlepen, this.circlepath);
             }
-            public void ChangeColor(Graphics g)
+            public void ChangeColor(Color a, Graphics g)
             {
-                this.circlepen.Color = Color.Red;
-                g.DrawPath(circlepen, circlepath);
+                this.circlepen.Color = a;
+                g.DrawPath(this.circlepen, circlepath);
             }
             ~CCircle()
             {
@@ -59,9 +62,11 @@ namespace LABA6
 
         class Storage : CCircle
         {
-            private int size = 0, flag;
+            private int size = 0;
+            private bool flag;
             private const int maxsize = 1000;
-            private CCircle[]arr;
+            private CCircle[] arr; 
+            private CCircle musor = new CCircle();
 
             public Storage()
             {
@@ -69,7 +74,12 @@ namespace LABA6
             }
             public bool empty()
             {
-                if (size == 0)
+                flag = false;
+                for (int i = 0; i < size; i++)
+                    if (this.arr[i] != this.musor)
+                        flag = true;
+
+                if (flag == false)
                     return true;
                 else return false;
             }
@@ -83,20 +93,8 @@ namespace LABA6
                 for (int i = 0; i < this.size; i++)
                     if (this.arr[i] == a)
                     {
-                        this.arr[i] = null;
-                        this.size--;
+                        this.arr[i] = this.musor;
                     }
-            }
-           
-            public CCircle get (CCircle a)
-            {
-                for (int i = 0; i<this.size; i++)
-                    if (this.arr[i] == a)
-                        this.flag = 1;
-
-                if (this.flag == 0)
-                    return null;
-                else return a;
             }
             public CCircle top()
             {
@@ -105,19 +103,39 @@ namespace LABA6
                 else return null;
             }
 
+
+            public CCircle GetCC (CCircle a)
+            {
+                for (int i = 0; i < this.size; i++)
+                    if (this.arr[i] == a)
+                        return this.arr[i];
+                return null;
+            }
+
+            public void DelAll(Graphics g)
+            {
+                int i = 0;
+                while (this.size != 0)
+                {
+                    this.arr[i].DrawCircle(g, Color.White);
+                    arr[i] = null;
+                    i++;
+                    this.size--;
+                }
+            }
             public CCircle search(int xt, int yt)
             {
-                this.flag = 0;
+                this.flag = false;
                 int iS = 0;
                 for (int i = 0; i < this.size; i++)
                 {
-                    if (this.arr[i].circlepath.IsVisible(xt, yt) == true)
+                    if ((this.arr[i].circlepath.IsVisible(xt, yt) == true) && (this.arr[i] != this.musor))
                     {
                         iS = i;
-                        flag = 1;
-                    }
+                        flag = true;
+                    } 
                 }
-                if (flag == 0)
+                if (flag == false)
                     return null;
                 else return this.arr[iS];
             }
@@ -128,6 +146,7 @@ namespace LABA6
                 this.arr = null;
             }
         }
+
         Storage store = new Storage();
         Storage selected = new Storage();
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -136,23 +155,37 @@ namespace LABA6
             pen.Color = p.BackColor;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            selected.DelAll(gra);
+        }
+
         private void Drawing_MouseDown(object sender, MouseEventArgs e)
         {
             if (store.search(e.X, e.Y) != null)
-            {
-                if (selected.empty() == false)
+            { 
+                if (Control.ModifierKeys == Keys.Control)
                 {
-                    selected.top().DrawCircle(gra, pen);
-                    selected.del(selected.search(e.X, e.Y));
+                    pentemp.Color = store.search(e.X, e.Y).circlepen.Color;
+                    store.search(e.X, e.Y).ChangeColor(Color.Red, gra);
+                    selected.add(store.search(e.X, e.Y));
                 }
-                store.search(e.X, e.Y).ChangeColor(gra);
-                selected.add(store.search(e.X, e.Y));
-                pen.Color = Color.Black;
+                else
+                {
+                    while (selected.empty() == false)
+                    {
+                        selected.top().ChangeColor(pentemp.Color, gra);
+                        selected.del(selected.top());
+                    }
+                    pentemp.Color = store.search(e.X, e.Y).circlepen.Color;
+                    store.search(e.X, e.Y).ChangeColor(Color.Red, gra);
+                    selected.add(store.search(e.X, e.Y));
+                }
             }
             else
             {
                 CCircle circle = new CCircle();
-                circle.DrawCircle(gra, pen);
+                circle.DrawCircle(gra, pen.Color);
                 store.add(circle);
             }
         }
