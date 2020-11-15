@@ -15,6 +15,7 @@ namespace LABA6
     {
         Graphics gra;
         Pen pen, pentemp;
+        
         public Form1()
         {
             InitializeComponent();
@@ -22,7 +23,6 @@ namespace LABA6
             pen = new Pen(Color.Black, 5);
             pentemp = new Pen(Color.White, 5);
         }
-
 
         public class CCircle
         {
@@ -160,40 +160,54 @@ namespace LABA6
                 selected.del(selected.top());
             }
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            selected.DelAll(gra);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            while (selected.empty() == false)
+            if (e.KeyCode == Keys.Delete)
+                selected.DelAll(gra);
+            else if (e.KeyCode == Keys.Subtract)
             {
-                selected.top().DrawCircle(gra, Color.White);
-                selected.top().rad *= 2;
-                selected.top().circlepath.Reset();
-                selected.top().DrawCircle(gra, Color.Red);
-                selected.top().ChangeColor(pentemp.Color, gra);
-                selected.del(selected.top());
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().rad /= 2;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
+            } 
+            else if (e.KeyCode == Keys.Add)
+            {
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().rad *= 2;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
             }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            while (selected.empty() == false)
+            else if (e.KeyCode == Keys.Up)
             {
-                selected.top().DrawCircle(gra, Color.White);
-                selected.top().rad /= 2;
-                selected.top().circlepath.Reset();
-                selected.top().DrawCircle(gra, Color.Red);
-                selected.top().ChangeColor(pentemp.Color, gra);
-                selected.del(selected.top());
+
+            }else if(e.KeyCode == Keys.Down)
+            {
+
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+
             }
         }
 
         private void Drawing_MouseDown(object sender, MouseEventArgs e)
         {
+            
             if (store.search(e.X, e.Y) != null)
             { 
                 if (Control.ModifierKeys == Keys.Control)

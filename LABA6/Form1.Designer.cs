@@ -30,13 +30,10 @@
         {
             this.Drawing = new System.Windows.Forms.Panel();
             this.Insrtument = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.Drawing.SuspendLayout();
             this.Insrtument.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -54,32 +51,20 @@
             this.Drawing.Name = "Drawing";
             this.Drawing.Size = new System.Drawing.Size(1029, 749);
             this.Drawing.TabIndex = 0;
+            this.Drawing.TabStop = true;
             this.Drawing.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Drawing_MouseDown);
             // 
             // Insrtument
             // 
             this.Insrtument.BackColor = System.Drawing.Color.Gray;
-            this.Insrtument.Controls.Add(this.button3);
-            this.Insrtument.Controls.Add(this.button2);
-            this.Insrtument.Controls.Add(this.button1);
             this.Insrtument.Controls.Add(this.pictureBox4);
             this.Insrtument.Controls.Add(this.pictureBox3);
             this.Insrtument.Controls.Add(this.pictureBox2);
             this.Insrtument.Controls.Add(this.pictureBox1);
             this.Insrtument.Location = new System.Drawing.Point(12, 12);
             this.Insrtument.Name = "Insrtument";
-            this.Insrtument.Size = new System.Drawing.Size(125, 717);
+            this.Insrtument.Size = new System.Drawing.Size(126, 34);
             this.Insrtument.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 204);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(118, 32);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Delete";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // pictureBox4
             // 
@@ -121,34 +106,16 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(3, 34);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(118, 33);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "+";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(3, 73);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(118, 35);
-            this.button3.TabIndex = 6;
-            this.button3.Text = "-";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1029, 749);
             this.Controls.Add(this.Drawing);
+            this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.Drawing.ResumeLayout(false);
             this.Insrtument.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
@@ -167,9 +134,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
     }
 }
 
