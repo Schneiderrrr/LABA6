@@ -30,13 +30,15 @@
         {
             this.Drawing = new System.Windows.Forms.Panel();
             this.Insrtument = new System.Windows.Forms.Panel();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.button1 = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.Drawing.SuspendLayout();
             this.Insrtument.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -50,13 +52,14 @@
             this.Drawing.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Drawing.Location = new System.Drawing.Point(0, 0);
             this.Drawing.Name = "Drawing";
-            this.Drawing.Size = new System.Drawing.Size(1020, 741);
+            this.Drawing.Size = new System.Drawing.Size(1029, 749);
             this.Drawing.TabIndex = 0;
             this.Drawing.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Drawing_MouseDown);
             // 
             // Insrtument
             // 
             this.Insrtument.BackColor = System.Drawing.Color.Gray;
+            this.Insrtument.Controls.Add(this.trackBar1);
             this.Insrtument.Controls.Add(this.button1);
             this.Insrtument.Controls.Add(this.pictureBox4);
             this.Insrtument.Controls.Add(this.pictureBox3);
@@ -66,6 +69,26 @@
             this.Insrtument.Name = "Insrtument";
             this.Insrtument.Size = new System.Drawing.Size(125, 717);
             this.Insrtument.TabIndex = 0;
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(3, 46);
+            this.trackBar1.Maximum = 1000;
+            this.trackBar1.Minimum = 200;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(118, 45);
+            this.trackBar1.TabIndex = 5;
+            this.trackBar1.Value = 200;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(118, 32);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Delete";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // pictureBox4
             // 
@@ -107,26 +130,18 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(4, 682);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(118, 32);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Delete";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1020, 741);
+            this.ClientSize = new System.Drawing.Size(1029, 749);
             this.Controls.Add(this.Drawing);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Drawing.ResumeLayout(false);
             this.Insrtument.ResumeLayout(false);
+            this.Insrtument.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -144,6 +159,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }
 

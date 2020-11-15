@@ -95,6 +95,7 @@ namespace LABA6
                     {
                         this.arr[i] = this.musor;
                     }
+                this.size--;
             }
             public CCircle top()
             {
@@ -153,6 +154,11 @@ namespace LABA6
         {
             PictureBox p = (PictureBox)sender;
             pen.Color = p.BackColor;
+            while (selected.empty() == false)
+            {
+                selected.top().ChangeColor(pen.Color, gra);
+                selected.del(selected.top());
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -169,6 +175,7 @@ namespace LABA6
                     pentemp.Color = store.search(e.X, e.Y).circlepen.Color;
                     store.search(e.X, e.Y).ChangeColor(Color.Red, gra);
                     selected.add(store.search(e.X, e.Y));
+                    
                 }
                 else
                 {
