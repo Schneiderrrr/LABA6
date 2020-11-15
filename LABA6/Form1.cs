@@ -37,22 +37,22 @@ namespace LABA6
                 this.x = Cursor.Position.X;
                 this.y = Cursor.Position.Y;
                 this.rad = 200;
-                circlepen = new Pen(Color.White, 5);
-                circlepath = new GraphicsPath();
+                this.circlepen = new Pen(Color.White, 5);
+                this.circlepath = new GraphicsPath();
             }
 
             public void DrawCircle(Graphics g, Color penc)
             {
                 this.circlepen.Color = penc;
-                this.xc = this.x - rad;
-                this.yc = this.y - rad;
+                this.xc = this.x - this.rad;
+                this.yc = this.y - this.rad;
                 this.circlepath.AddEllipse(this.xc, this.yc, this.rad, this.rad);
                 g.DrawPath(this.circlepen, this.circlepath);
             }
             public void ChangeColor(Color a, Graphics g)
             {
                 this.circlepen.Color = a;
-                g.DrawPath(this.circlepen, circlepath);
+                g.DrawPath(this.circlepen, this.circlepath);
             }
             ~CCircle()
             {
@@ -60,7 +60,7 @@ namespace LABA6
             }
         }
 
-        class Storage : CCircle
+        class KatesStorage : CCircle
         {
             private int size = 0;
             private bool flag;
@@ -68,7 +68,7 @@ namespace LABA6
             private CCircle[] arr; 
             private CCircle musor = new CCircle();
 
-            public Storage()
+            public KatesStorage()
             {
                 arr = new CCircle[maxsize];
             }
@@ -119,7 +119,7 @@ namespace LABA6
                 while (this.size != 0)
                 {
                     this.arr[i].DrawCircle(g, Color.White);
-                    arr[i] = null;
+                    this.arr[i] = null;
                     i++;
                     this.size--;
                 }
@@ -142,14 +142,14 @@ namespace LABA6
             }
 
 
-            ~Storage()
+            ~KatesStorage()
             {
                 this.arr = null;
             }
         }
 
-        Storage store = new Storage();
-        Storage selected = new Storage();
+        KatesStorage store = new KatesStorage();
+        KatesStorage selected = new KatesStorage();
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             PictureBox p = (PictureBox)sender;
@@ -164,6 +164,32 @@ namespace LABA6
         private void button1_Click(object sender, EventArgs e)
         {
             selected.DelAll(gra);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            while (selected.empty() == false)
+            {
+                selected.top().DrawCircle(gra, Color.White);
+                selected.top().rad *= 2;
+                selected.top().circlepath.Reset();
+                selected.top().DrawCircle(gra, Color.Red);
+                selected.top().ChangeColor(pentemp.Color, gra);
+                selected.del(selected.top());
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            while (selected.empty() == false)
+            {
+                selected.top().DrawCircle(gra, Color.White);
+                selected.top().rad /= 2;
+                selected.top().circlepath.Reset();
+                selected.top().DrawCircle(gra, Color.Red);
+                selected.top().ChangeColor(pentemp.Color, gra);
+                selected.del(selected.top());
+            }
         }
 
         private void Drawing_MouseDown(object sender, MouseEventArgs e)

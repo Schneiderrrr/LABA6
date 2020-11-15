@@ -30,15 +30,15 @@
         {
             this.Drawing = new System.Windows.Forms.Panel();
             this.Insrtument = new System.Windows.Forms.Panel();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.button1 = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.Drawing.SuspendLayout();
             this.Insrtument.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -59,7 +59,8 @@
             // Insrtument
             // 
             this.Insrtument.BackColor = System.Drawing.Color.Gray;
-            this.Insrtument.Controls.Add(this.trackBar1);
+            this.Insrtument.Controls.Add(this.button3);
+            this.Insrtument.Controls.Add(this.button2);
             this.Insrtument.Controls.Add(this.button1);
             this.Insrtument.Controls.Add(this.pictureBox4);
             this.Insrtument.Controls.Add(this.pictureBox3);
@@ -69,16 +70,6 @@
             this.Insrtument.Name = "Insrtument";
             this.Insrtument.Size = new System.Drawing.Size(125, 717);
             this.Insrtument.TabIndex = 0;
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Location = new System.Drawing.Point(3, 46);
-            this.trackBar1.Maximum = 1000;
-            this.trackBar1.Minimum = 200;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(118, 45);
-            this.trackBar1.TabIndex = 5;
-            this.trackBar1.Value = 200;
             // 
             // button1
             // 
@@ -130,6 +121,26 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(3, 34);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(118, 33);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "+";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(3, 73);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(118, 35);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "-";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -140,8 +151,6 @@
             this.Text = "Form1";
             this.Drawing.ResumeLayout(false);
             this.Insrtument.ResumeLayout(false);
-            this.Insrtument.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -159,7 +168,8 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
     }
 }
 
