@@ -190,18 +190,51 @@ namespace LABA6
             }
             else if (e.KeyCode == Keys.Up)
             {
-
-            }else if(e.KeyCode == Keys.Down)
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().y -= 50;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
+            }
+            else if(e.KeyCode == Keys.Down)
             {
-
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().y += 50;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
             }
             else if (e.KeyCode == Keys.Left)
             {
-
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().x -= 50;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
             }
             else if (e.KeyCode == Keys.Right)
             {
-
+                while (selected.empty() == false)
+                {
+                    selected.top().DrawCircle(gra, Color.White);
+                    selected.top().x += 50;
+                    selected.top().circlepath.Reset();
+                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().ChangeColor(pentemp.Color, gra);
+                    selected.del(selected.top());
+                }
             }
         }
 
