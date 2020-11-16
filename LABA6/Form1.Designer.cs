@@ -49,7 +49,7 @@
             this.Drawing.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Drawing.Location = new System.Drawing.Point(0, 0);
             this.Drawing.Name = "Drawing";
-            this.Drawing.Size = new System.Drawing.Size(1029, 749);
+            this.Drawing.Size = new System.Drawing.Size(1236, 790);
             this.Drawing.TabIndex = 0;
             this.Drawing.TabStop = true;
             this.Drawing.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Drawing_MouseDown);
@@ -110,7 +110,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1029, 749);
+            this.ClientSize = new System.Drawing.Size(1236, 790);
             this.Controls.Add(this.Drawing);
             this.KeyPreview = true;
             this.Name = "Form1";
