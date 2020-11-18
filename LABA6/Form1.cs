@@ -15,6 +15,7 @@ namespace LABA6
     {
         Graphics gra;
         Pen pen, pentemp;
+        public int choice;
         
         public Form1()
         {
@@ -48,13 +49,33 @@ namespace LABA6
                 else return true;
             }
 
-            public void DrawCircle(Graphics g, Color penc)
+            public bool LineIsOutside(int xt, int yt, Panel a)
+            {
+                if ((xt <= a.Width) && (xt + 300 <= a.Width) && (yt <= a.Height) && (xt >= 0) && (yt >= 0))
+                    return false;
+                else return true;
+            }
+
+            public void ChangeLine(int xt)
+            {
+                this.circlepath.Reset();
+                this.circlepath.AddLine(this.x, this.y, this.x + xt, this.y);
+            }
+
+            public void DrawCircle(Graphics g, Color penc, int c)
             {
                     this.circlepen.Color = penc;
+                if (c == 1)
+                {
                     this.xc = this.x - this.rad;
                     this.yc = this.y - this.rad;
                     this.circlepath.AddEllipse(this.xc, this.yc, this.rad, this.rad);
-                    g.DrawPath(this.circlepen, this.circlepath);
+                }
+                else
+                {
+                    this.circlepath.AddLine(this.x, this.y , this.x + 300, this.y);
+                }
+                g.DrawPath(this.circlepen, this.circlepath);
             }
             public void ChangeColor(Color a, Graphics g)
             {
@@ -111,28 +132,41 @@ namespace LABA6
                 else return null;
             }
 
-            public void DelAll(Graphics g)
+            public void DelAll(Graphics g, int c)
             {
                 int i = 0;
                 while (this.size != 0)
                 {
-                    this.arr[i].DrawCircle(g, Color.White);
+                    this.arr[i].DrawCircle(g, Color.White, c);
                     this.arr[i] = null;
                     i++;
                     this.size--;
                 }
             }
-            public CCircle search(int xt, int yt)
+            public CCircle search(int xt, int yt, int choice)
             {
                 this.flag = false;
                 int iS = 0;
-                for (int i = 0; i < this.size; i++)
+                if (choice == 1)
                 {
-                    if ((this.arr[i].circlepath.IsVisible(xt, yt) == true) && (this.arr[i] != this.musor))
+                    for (int i = 0; i < this.size; i++)
                     {
-                        iS = i;
-                        flag = true;
-                    } 
+                        if ((this.arr[i].circlepath.IsVisible(xt, yt) == true) && (this.arr[i] != this.musor))
+                        {
+                            iS = i;
+                            flag = true;
+                        }
+                    }
+                } else
+                {
+                    for (int i = 0; i < this.size; i++)
+                    {
+                        if ((this.arr[i].circlepath.IsOutlineVisible(xt, yt, this.circlepen) == true) && (this.arr[i] != this.musor))
+                        {
+                            iS = i;
+                            flag = true;
+                        }
+                    }
                 }
                 if (flag == false)
                     return null;
@@ -160,51 +194,70 @@ namespace LABA6
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-                selected.DelAll(gra);
-            else if (e.KeyCode == Keys.Subtract)
+            if (e.KeyCode == Keys.Delete)//удаление
+                selected.DelAll(gra, choice);
+            else if (e.KeyCode == Keys.Subtract)//уменьшение
             {
                 while (selected.empty() == false)
                 {
-                    selected.top().DrawCircle(gra, Color.White);
-                    selected.top().rad /= 2;
-                    selected.top().circlepath.Reset();
-                    selected.top().DrawCircle(gra, Color.Red);
+                    selected.top().DrawCircle(gra, Color.White, choice);
+                    if (choice == 1)
+                    {
+                        selected.top().rad /= 2;
+                        selected.top().circlepath.Reset();
+                        selected.top().DrawCircle(gra, Color.Red, choice);
+                    }
+                    else
+                    {
+                        selected.top().circlepath.Reset();
+                        selected.top().ChangeLine(100);
+                    }
                     selected.top().ChangeColor(pentemp.Color, gra);
                     selected.del(selected.top());
                 }
             } 
-            else if (e.KeyCode == Keys.Add)
+            else if (e.KeyCode == Keys.Add)//увеличение
             {
                 while (selected.empty() == false)
                 {
-                    selected.top().rad *= 2;
-                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                    if (choice == 1)
                     {
-                        selected.top().DrawCircle(gra, Color.White);
+                        selected.top().rad *= 2;
+                        if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false && selected.top().LineIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                        {
+                            selected.top().DrawCircle(gra, Color.White, choice);
+                            selected.top().circlepath.Reset();
+                            selected.top().DrawCircle(gra, Color.Red, choice);
+                            selected.top().ChangeColor(pentemp.Color, gra);
+                            selected.del(selected.top());
+                        }
+                        else
+                        {
+                            MessageBox.Show("Не влезет");
+                            selected.top().rad /= 2;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        selected.top().DrawCircle(gra, Color.White, choice);
                         selected.top().circlepath.Reset();
-                        selected.top().DrawCircle(gra, Color.Red);
+                        selected.top().ChangeLine(500);
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
-                    else 
-                    { 
-                        MessageBox.Show("Не влезет"); 
-                        selected.top().rad /= 2; 
-                        break; 
-                    }
                 }
             }
-            else if (e.KeyCode == Keys.Up)
+            else if (e.KeyCode == Keys.W)//переместить вверх
             {
                 while (selected.empty() == false)
                 {
                     selected.top().y -= 50;
-                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false && selected.top().LineIsOutside(selected.top().x, selected.top().y, Drawing) == false)
                     {
-                        selected.top().DrawCircle(gra, Color.White);
+                        selected.top().DrawCircle(gra, Color.White, choice);
                         selected.top().circlepath.Reset();
-                        selected.top().DrawCircle(gra, Color.Red);
+                        selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
@@ -216,16 +269,16 @@ namespace LABA6
                     }
                 }
             }
-            else if(e.KeyCode == Keys.Down)
+            else if(e.KeyCode == Keys.S)//переместить вниз
             {
                 while (selected.empty() == false)
                 {
                     selected.top().y += 50;
-                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false && selected.top().LineIsOutside(selected.top().x, selected.top().y, Drawing) == false)
                     {
-                        selected.top().DrawCircle(gra, Color.White);
+                        selected.top().DrawCircle(gra, Color.White, choice);
                         selected.top().circlepath.Reset();
-                        selected.top().DrawCircle(gra, Color.Red);
+                        selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
@@ -237,16 +290,16 @@ namespace LABA6
                     }
                 }
             }
-            else if (e.KeyCode == Keys.Left)
+            else if (e.KeyCode == Keys.A)//переместить влево
             {
                 while (selected.empty() == false)
                 {
                     selected.top().x -= 50;
-                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false && selected.top().LineIsOutside(selected.top().x, selected.top().y, Drawing) == false)
                     {
-                        selected.top().DrawCircle(gra, Color.White);
+                        selected.top().DrawCircle(gra, Color.White, choice);
                         selected.top().circlepath.Reset();
-                        selected.top().DrawCircle(gra, Color.Red);
+                        selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
@@ -258,17 +311,17 @@ namespace LABA6
                     }
                 }
             }
-            else if (e.KeyCode == Keys.Right)
+            else if (e.KeyCode == Keys.D)//переместить вправо
             {
                 while (selected.empty() == false)
                 {
                     
                     selected.top().x += 50;
-                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false)
+                    if (selected.top().CircleIsOutside(selected.top().x, selected.top().y, Drawing) == false && selected.top().LineIsOutside(selected.top().x, selected.top().y, Drawing) == false)
                     {
-                        selected.top().DrawCircle(gra, Color.White);
+                        selected.top().DrawCircle(gra, Color.White, choice);
                         selected.top().circlepath.Reset();
-                        selected.top().DrawCircle(gra, Color.Red);
+                        selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
@@ -282,15 +335,25 @@ namespace LABA6
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            choice = 1;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            choice = 2;
+        }
+
         private void Drawing_MouseDown(object sender, MouseEventArgs e)
         {
-            if (store.search(e.X, e.Y) != null)
+            if (store.search(e.X, e.Y, choice) != null)
             { 
                 if (Control.ModifierKeys == Keys.Control)
                 {
-                    pentemp.Color = store.search(e.X, e.Y).circlepen.Color;
-                    store.search(e.X, e.Y).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y));
+                    pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
+                    store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
+                    selected.add(store.search(e.X, e.Y, choice));
                     
                 }
                 else
@@ -300,17 +363,17 @@ namespace LABA6
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
-                    pentemp.Color = store.search(e.X, e.Y).circlepen.Color;
-                    store.search(e.X, e.Y).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y));
+                    pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
+                    store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
+                    selected.add(store.search(e.X, e.Y, choice));
                 }
             }
             else
             {
                 CCircle circle = new CCircle();
-                if (circle.CircleIsOutside(e.X, e.Y, Drawing) == false)
+                if (circle.CircleIsOutside(e.X, e.Y, Drawing) == false && circle.LineIsOutside(e.X, e.Y, Drawing) == false)
                 {
-                    circle.DrawCircle(gra, pen.Color);
+                    circle.DrawCircle(gra, pen.Color, choice);
                     store.add(circle);
                 } else
                 {
