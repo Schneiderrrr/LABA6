@@ -84,7 +84,7 @@ namespace LABA6
             }
             ~CCircle()//деструктор
             {
-                this.circlepath.Reset();
+                //this.circlepath.Reset();
             }
         }
 
@@ -177,6 +177,35 @@ namespace LABA6
             ~KatesStorage()//деструктор
             {
                 this.arr = null;
+            }
+        }
+
+        class CGroup : CCircle
+        {
+            private const int maxsize = 1000;
+            public int tempsize = 0;
+            public CCircle[] group;
+
+            public CGroup()
+            {
+                group = new CCircle[maxsize];
+            }
+
+            public void AddGroup(CCircle a)
+            {
+                this.group[this.tempsize] = a;
+                this.tempsize++;
+            }
+            public void MoveGroup(int xt, int yt)
+            {
+                this.group[this.tempsize].x = xt;
+                this.group[this.tempsize].y = yt;
+                this.tempsize--;
+            }
+
+            ~CGroup()
+            {
+                this.group = null;
             }
         }
 
@@ -351,8 +380,10 @@ namespace LABA6
             { 
                 if (Control.ModifierKeys == Keys.Control)//выделение кругов
                 {
+                    CGroup group1 = new CGroup();
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
+                    group1.AddGroup(store.search(e.X, e.Y, choice));
                     selected.add(store.search(e.X, e.Y, choice));
                     
                 }
@@ -363,8 +394,10 @@ namespace LABA6
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
+                    CGroup group2 = new CGroup();
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
+                    group2.AddGroup(store.search(e.X, e.Y, choice));
                     selected.add(store.search(e.X, e.Y, choice));
                 }
             }
