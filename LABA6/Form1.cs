@@ -25,7 +25,35 @@ namespace LABA6
             pentemp = new Pen(Color.White, 5);//текущий цвет контура
         }
 
-        public class CCircle//класс кругов и линий
+        abstract class AbstractFactory//паттерн Abstract Factory
+        {
+            public abstract bool CircleIsOutside(int xt, int yt, Panel a);
+            public abstract bool LineIsOutside(int xt, int yt, Panel a);
+            public abstract void ChangeLine(int xt);
+            public abstract void DrawCircle(Graphics g, Color penc, int c);
+            public abstract void ChangeColor(Color a, Graphics g);
+            public abstract void inputTXT();
+            public abstract void outputTXT();
+            public abstract CCircle AddToGroup(CCircle a);
+        }
+        class CGroup : AbstractFactory//паттерн Composite
+        {
+            public int tempsize = 0;
+            public CCircle[] group;
+            public CGroup ()
+            {
+                group = new CCircle[1000];
+            }
+           
+            public override CCircle AddToGroup(CCircle a)
+            {
+                this.group[this.tempsize] = a;
+                this.tempsize++;
+                return this.group[this.tempsize - 1];
+            }
+        }
+
+        class CCircle : AbstractFactory//класс кругов и линий
         {
             public GraphicsPath circlepath;
             public Pen circlepen;
@@ -40,7 +68,8 @@ namespace LABA6
                 this.circlepen = new Pen(Color.White, 5);
                 this.circlepath = new GraphicsPath();
             }
-            public bool CircleIsOutside(int xt, int yt, Panel a)//контроль границ круга
+
+            public override bool CircleIsOutside(int xt, int yt, Panel a)//контроль границ круга
             {
                 if ((xt + this.rad <= a.Width) && (yt + this.rad <= a.Height) && (xt - this.rad >= 0) && (yt - this.rad) >= 0)
                 {
@@ -49,20 +78,20 @@ namespace LABA6
                 else return true;
             }
 
-            public bool LineIsOutside(int xt, int yt, Panel a)//контроль границ линии
+            public override bool LineIsOutside(int xt, int yt, Panel a)//контроль границ линии
             {
                 if ((xt <= a.Width) && (xt + 300 <= a.Width) && (yt <= a.Height) && (xt >= 0) && (yt >= 0))
                     return false;
                 else return true;
             }
 
-            public void ChangeLine(int xt)//изменение размера линии
+            public override void ChangeLine(int xt)//изменение размера линии
             {
                 this.circlepath.Reset();
                 this.circlepath.AddLine(this.x, this.y, this.x + xt, this.y);
             }
 
-            public void DrawCircle(Graphics g, Color penc, int c)//отрисовка круга и линии
+            public override void DrawCircle(Graphics g, Color penc, int c)//отрисовка круга и линии
             {
                     this.circlepen.Color = penc;
                 if (c == 1)
@@ -77,7 +106,7 @@ namespace LABA6
                 }
                 g.DrawPath(this.circlepen, this.circlepath);
             }
-            public void ChangeColor(Color a, Graphics g)//изменение цвета
+            public override void ChangeColor(Color a, Graphics g)//изменение цвета
             {
                 this.circlepen.Color = a;
                 g.DrawPath(this.circlepen, this.circlepath);
@@ -100,6 +129,7 @@ namespace LABA6
             {
                 arr = new CCircle[maxsize];
             }
+            
             public bool empty()//проверка пустоту
             {
                 flag = false;
@@ -177,35 +207,6 @@ namespace LABA6
             ~KatesStorage()//деструктор
             {
                 this.arr = null;
-            }
-        }
-
-        class CGroup : CCircle
-        {
-            private const int maxsize = 1000;
-            public int tempsize = 0;
-            public CCircle[] group;
-
-            public CGroup()
-            {
-                group = new CCircle[maxsize];
-            }
-
-            public void AddGroup(CCircle a)
-            {
-                this.group[this.tempsize] = a;
-                this.tempsize++;
-            }
-            public void MoveGroup(int xt, int yt)
-            {
-                this.group[this.tempsize].x = xt;
-                this.group[this.tempsize].y = yt;
-                this.tempsize--;
-            }
-
-            ~CGroup()
-            {
-                this.group = null;
             }
         }
 
@@ -380,10 +381,8 @@ namespace LABA6
             { 
                 if (Control.ModifierKeys == Keys.Control)//выделение кругов
                 {
-                    CGroup group1 = new CGroup();
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    group1.AddGroup(store.search(e.X, e.Y, choice));
                     selected.add(store.search(e.X, e.Y, choice));
                     
                 }
@@ -394,10 +393,8 @@ namespace LABA6
                         selected.top().ChangeColor(pentemp.Color, gra);
                         selected.del(selected.top());
                     }
-                    CGroup group2 = new CGroup();
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    group2.AddGroup(store.search(e.X, e.Y, choice));
                     selected.add(store.search(e.X, e.Y, choice));
                 }
             }
