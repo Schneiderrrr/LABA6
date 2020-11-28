@@ -16,7 +16,7 @@ namespace LABA6
     {
         Graphics gra;//объявляем графику
         Pen pen, pentemp;//контур
-        public int choice;//выбор крга или линии
+        public int choice = 1;//выбор крга или линии
         
         public Form1()
         {
@@ -28,7 +28,7 @@ namespace LABA6
 
         abstract class AbstractFactory//паттерн Abstract Factory
         {
-            public string name = @"C:\StoreInformation";
+            protected string name = @"C:\StoreInformation";
             public abstract void inputTXT();
             public abstract void outputTXT();
             public abstract void AddToGroup(CCircle a);
@@ -134,11 +134,11 @@ namespace LABA6
             }
             public override void outputTXT()
             {
-
+                throw new NotImplementedException();
             }
             public override void inputTXT()
             {
-
+                throw new NotImplementedException();
             }
 
 
@@ -152,8 +152,9 @@ namespace LABA6
         {
             private int size = 0;
             private bool flag;
-            private int CountCircle = 0, CountLine = 0;
+            public int CountCircle = 0, CountLine = 0;
             private string info;
+            private string[] infos;
             private const int maxsize = 1000;
             private CCircle[] arr; 
             private CCircle musor = new CCircle();
@@ -245,7 +246,13 @@ namespace LABA6
             }
             public override void outputTXT()//Чтение из файла
             {
-
+                
+                    this.infos = File.ReadAllLines(name); 
+                    this.info = this.infos[0].Remove(0, 9);
+                    this.CountCircle = Int32.Parse(this.info);
+                    /*this.info += name.Skip(8);
+                    this.CountLine = Int32.Parse(this.info);*/
+                
             }
             public override void inputTXT()//Вывод в файл
             {
@@ -440,6 +447,17 @@ namespace LABA6
         private void button4_Click(object sender, EventArgs e)
         {
             store.outputTXT();
+            int x = 250, y = 250;
+            for (int i = 0; i < store.CountCircle; i++)
+            {
+                CCircle a = new CCircle();
+                a.x = x;
+                a.y = y;
+                a.DrawCircle(gra, pen.Color, 1);
+                x += 50;
+                store.add(a, 1);
+                store.CountCircle--;
+            }
         }
 
         private void Drawing_MouseDown(object sender, MouseEventArgs e)//здесь создаем круги
