@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace LABA6
 {
@@ -27,14 +28,11 @@ namespace LABA6
 
         abstract class AbstractFactory//паттерн Abstract Factory
         {
-            public abstract bool CircleIsOutside(int xt, int yt, Panel a);
-            public abstract bool LineIsOutside(int xt, int yt, Panel a);
-            public abstract void ChangeLine(int xt);
-            public abstract void DrawCircle(Graphics g, Color penc, int c);
-            public abstract void ChangeColor(Color a, Graphics g);
+            public string name = @"C:\StoreInformation";
             public abstract void inputTXT();
             public abstract void outputTXT();
-            public abstract CCircle AddToGroup(CCircle a);
+            public abstract void AddToGroup(CCircle a);
+            public abstract CCircle RemoveFromGroup();
         }
         class CGroup : AbstractFactory//паттерн Composite
         {
@@ -45,11 +43,23 @@ namespace LABA6
                 group = new CCircle[1000];
             }
            
-            public override CCircle AddToGroup(CCircle a)
+            public override void AddToGroup(CCircle a)
             {
                 this.group[this.tempsize] = a;
                 this.tempsize++;
+            }
+            public override CCircle RemoveFromGroup()
+            {
                 return this.group[this.tempsize - 1];
+            }
+            // Необходимое переодпределение
+            public override void inputTXT()
+            {
+                throw new NotImplementedException();
+            }
+            public override void outputTXT()
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -69,7 +79,7 @@ namespace LABA6
                 this.circlepath = new GraphicsPath();
             }
 
-            public override bool CircleIsOutside(int xt, int yt, Panel a)//контроль границ круга
+            public bool CircleIsOutside(int xt, int yt, Panel a)//контроль границ круга
             {
                 if ((xt + this.rad <= a.Width) && (yt + this.rad <= a.Height) && (xt - this.rad >= 0) && (yt - this.rad) >= 0)
                 {
@@ -78,20 +88,20 @@ namespace LABA6
                 else return true;
             }
 
-            public override bool LineIsOutside(int xt, int yt, Panel a)//контроль границ линии
+            public bool LineIsOutside(int xt, int yt, Panel a)//контроль границ линии
             {
                 if ((xt <= a.Width) && (xt + 300 <= a.Width) && (yt <= a.Height) && (xt >= 0) && (yt >= 0))
                     return false;
                 else return true;
             }
 
-            public override void ChangeLine(int xt)//изменение размера линии
+            public void ChangeLine(int xt)//изменение размера линии
             {
                 this.circlepath.Reset();
                 this.circlepath.AddLine(this.x, this.y, this.x + xt, this.y);
             }
 
-            public override void DrawCircle(Graphics g, Color penc, int c)//отрисовка круга и линии
+            public void DrawCircle(Graphics g, Color penc, int c)//отрисовка круга и линии
             {
                     this.circlepen.Color = penc;
                 if (c == 1)
@@ -106,12 +116,33 @@ namespace LABA6
                 }
                 g.DrawPath(this.circlepen, this.circlepath);
             }
-            public override void ChangeColor(Color a, Graphics g)//изменение цвета
+            public void ChangeColor(Color a, Graphics g)//изменение цвета
             {
                 this.circlepen.Color = a;
                 g.DrawPath(this.circlepen, this.circlepath);
             }
-            ~CCircle()//деструктор
+           
+            
+            //Необходимое переопределение
+            public override void AddToGroup(CCircle a)
+            {
+                throw new NotImplementedException();
+            }
+            public override CCircle RemoveFromGroup()
+            {
+                throw new NotImplementedException();
+            }
+            public override void outputTXT()
+            {
+
+            }
+            public override void inputTXT()
+            {
+
+            }
+
+
+                ~CCircle()//деструктор
             {
                 //this.circlepath.Reset();
             }
@@ -121,6 +152,8 @@ namespace LABA6
         {
             private int size = 0;
             private bool flag;
+            private int CountCircle = 0, CountLine = 0;
+            private string info;
             private const int maxsize = 1000;
             private CCircle[] arr; 
             private CCircle musor = new CCircle();
@@ -141,19 +174,27 @@ namespace LABA6
                     return true;
                 else return false;
             }
-            public void add(CCircle a)//добавление элемента
+            public void add(CCircle a, int c)//добавление элемента
             {
                 this.arr[this.size] = a;
                 this.size++;
+                if (c == 1)
+                    this.CountCircle++;
+                else this.CountLine++;
+
             }
-            public void del(CCircle a)//удаление элемента
+            public void del(CCircle a, int c)//удаление элемента
             {
                 for (int i = 0; i < this.size; i++)
                     if (this.arr[i] == a)
                     {
+                        if (c == 1)
+                            this.CountCircle--;
+                        else this.CountLine--;
                         this.arr[i] = this.musor;
                     }
                 this.size--;
+
             }
             public CCircle top()//возвращает верхний элемент
             {
@@ -202,7 +243,23 @@ namespace LABA6
                     return null;
                 else return this.arr[iS];
             }
+            public override void outputTXT()//Чтение из файла
+            {
 
+            }
+            public override void inputTXT()//Вывод в файл
+            {
+                File.Delete(name);
+                this.info = "Кругов - ";
+                this.info += this.CountCircle.ToString();
+                this.info += "\n";
+                File.AppendAllText(name, this.info);
+                this.info = "\0";
+                this.info = "Линий - ";
+                this.info += this.CountLine.ToString();
+                this.info += "\n";
+                File.AppendAllText(name, this.info);
+            }
 
             ~KatesStorage()//деструктор
             {
@@ -219,7 +276,7 @@ namespace LABA6
             while (selected.empty() == false)
             {
                 selected.top().ChangeColor(pen.Color, gra);
-                selected.del(selected.top());
+                selected.del(selected.top(), choice);
             }
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)//проверка нажатия клавиш клавиатуры
@@ -243,7 +300,7 @@ namespace LABA6
                         selected.top().ChangeLine(100);
                     }
                     selected.top().ChangeColor(pentemp.Color, gra);
-                    selected.del(selected.top());
+                    selected.del(selected.top(), choice);
                 }
             } 
             else if (e.KeyCode == Keys.Add)//увеличение
@@ -259,7 +316,7 @@ namespace LABA6
                             selected.top().circlepath.Reset();
                             selected.top().DrawCircle(gra, Color.Red, choice);
                             selected.top().ChangeColor(pentemp.Color, gra);
-                            selected.del(selected.top());
+                            selected.del(selected.top(), choice);
                         }
                         else
                         {
@@ -274,7 +331,7 @@ namespace LABA6
                         selected.top().circlepath.Reset();
                         selected.top().ChangeLine(500);
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                 }
             }
@@ -289,7 +346,7 @@ namespace LABA6
                         selected.top().circlepath.Reset();
                         selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                     else
                     {
@@ -310,7 +367,7 @@ namespace LABA6
                         selected.top().circlepath.Reset();
                         selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                     else
                     {
@@ -331,7 +388,7 @@ namespace LABA6
                         selected.top().circlepath.Reset();
                         selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                     else
                     {
@@ -353,7 +410,7 @@ namespace LABA6
                         selected.top().circlepath.Reset();
                         selected.top().DrawCircle(gra, Color.Red, choice);
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                     else
                     {
@@ -375,6 +432,16 @@ namespace LABA6
             choice = 2;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            store.inputTXT();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            store.outputTXT();
+        }
+
         private void Drawing_MouseDown(object sender, MouseEventArgs e)//здесь создаем круги
         {
             if (store.search(e.X, e.Y, choice) != null)//проверка попадания в какой-либо круг
@@ -383,7 +450,7 @@ namespace LABA6
                 {
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y, choice));
+                    selected.add(store.search(e.X, e.Y, choice), choice);
                     
                 }
                 else
@@ -391,11 +458,11 @@ namespace LABA6
                     while (selected.empty() == false)
                     {
                         selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top());
+                        selected.del(selected.top(), choice);
                     }
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y, choice));
+                    selected.add(store.search(e.X, e.Y, choice), choice);
                 }
             }
             else
@@ -404,7 +471,7 @@ namespace LABA6
                 if (circle.CircleIsOutside(e.X, e.Y, Drawing) == false && circle.LineIsOutside(e.X, e.Y, Drawing) == false)
                 {
                     circle.DrawCircle(gra, pen.Color, choice);
-                    store.add(circle);
+                    store.add(circle, choice);
                 } else
                 {
                     MessageBox.Show("Выход за границы");
