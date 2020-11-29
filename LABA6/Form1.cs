@@ -82,21 +82,25 @@ namespace LABA6
         }
         class CGroup //паттерн Composite
         {
-            public int tempsize = 0;
+            private int tempsize;
             public CShape[] group;
             public CGroup()
             {
-                group = new CShape[1000];
+                this.group = new CShape[1000];
+                this.tempsize = 0;
             }
-
             public void AddToGroup(CShape a)
             {
                 this.group[this.tempsize] = a;
                 this.tempsize++;
             }
-            public CShape RemoveFromGroup()
+            public void DelFromGroup()
             {
-                return this.group[this.tempsize - 1];
+                this.tempsize--;
+            }
+            public CShape GetFromGroup()
+            {
+                return this.group[this.tempsize-1];
             }
         }
 
@@ -161,7 +165,7 @@ namespace LABA6
 
             ~CShape()//деструктор
             {
-                //this.circlepath.Reset();
+                
             }
         }
 
@@ -269,6 +273,7 @@ namespace LABA6
 
         InPutFile inp = new InPutFile();
         OutPutFile outp = new OutPutFile();
+        CGroup group = new CGroup();
         KatesStorage store = new KatesStorage();
         KatesStorage selected = new KatesStorage();
         private void pictureBox1_Click(object sender, EventArgs e)//здесь задаю текущий цвет
@@ -475,19 +480,22 @@ namespace LABA6
                 {
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y, choice), choice);
+                    group.AddToGroup(store.search(e.X, e.Y, choice));
+                    selected.add(group.GetFromGroup(), choice);
 
                 }
                 else
                 {
                     while (selected.empty() == false)
                     {
-                        selected.top().ChangeColor(pentemp.Color, gra);
-                        selected.del(selected.top(), choice);
+                        group.GetFromGroup().ChangeColor(pentemp.Color, gra);
+                        selected.del(group.GetFromGroup(), choice);
+                        group.DelFromGroup();
                     }
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
-                    selected.add(store.search(e.X, e.Y, choice), choice);
+                    group.AddToGroup(store.search(e.X, e.Y, choice));
+                    selected.add(group.GetFromGroup(), choice);
                 }
             }
             else
