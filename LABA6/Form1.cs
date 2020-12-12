@@ -169,7 +169,7 @@ namespace LABA6
             }
             public CShape GetFromGroup()//возврат элемента из группы
             {
-                return this.group[this.tempsize - 1];
+                return this.group[this.tempsize-1];
             }
         }
         class KatesStorage : CShape//мое хранилище
@@ -296,7 +296,10 @@ namespace LABA6
                     return -1;
                 else return this.iS;
             }
-
+            public CShape RetCSByInd(int i)
+            {
+                return this.arr[i-1];
+            }
             ~KatesStorage()//деструктор
             {
                 this.arr = null;
@@ -323,9 +326,18 @@ namespace LABA6
             {
                 tree.Nodes[0].Nodes[index].BackColor = c;
             }
-            public void SelectOutTree()
+            public int SelectOutTree(string Name, int choice)
             {
-
+                int index;
+                if (choice == 1)
+                {
+                    index = Int32.Parse(Name.Substring(4));
+                }
+                else
+                {
+                    index = Int32.Parse(Name.Substring(5));
+                }
+                return index;
             }
         }
         /*Объявление необходимых объектов*/
@@ -529,6 +541,24 @@ namespace LABA6
             }
         }
 
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            while (selected.empty() == false)
+            {
+                group.GetFromGroup().ChangeColor(Color.Black, gra);
+                selected.del(group.GetFromGroup(), choice);
+                group.DelFromGroup();
+            }
+            for (int i = 0; i < store.size; i++)
+            {
+                treeView1.Nodes[0].Nodes[i].BackColor = Color.Gray;
+            }
+            treeView1.SelectedNode.BackColor = Color.Red;
+            store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)).ChangeColor(Color.Red, gra);
+            group.AddToGroup(store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)));
+            selected.add(store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)), choice);
+        }
+
         private void Drawing_MouseDown(object sender, MouseEventArgs e)//здесь создаем круги
         {
             if (store.search(e.X, e.Y, choice) != null)//проверка попадания в какой-либо круг
@@ -548,7 +578,6 @@ namespace LABA6
                         group.GetFromGroup().ChangeColor(pentemp.Color, gra);
                         selected.del(group.GetFromGroup(), choice);
                         group.DelFromGroup();
-                        observer.SelectInTree(treeView1, store.RetInd(e.X, e.Y, choice), Color.Gray);
                     }
                     for (int i = 0; i<store.size; i++)
                     {
