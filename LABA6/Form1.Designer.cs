@@ -30,6 +30,7 @@
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Фигуры");
             this.Drawing = new System.Windows.Forms.Panel();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.Insrtument = new System.Windows.Forms.Panel();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -39,7 +40,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.button5 = new System.Windows.Forms.Button();
             this.Drawing.SuspendLayout();
             this.Insrtument.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -61,9 +62,23 @@
             this.Drawing.TabStop = true;
             this.Drawing.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Drawing_MouseDown);
             // 
+            // treeView1
+            // 
+            this.treeView1.BackColor = System.Drawing.Color.Gray;
+            this.treeView1.Location = new System.Drawing.Point(12, 193);
+            this.treeView1.Name = "treeView1";
+            treeNode1.Name = "CShape";
+            treeNode1.Text = "Фигуры";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.treeView1.Size = new System.Drawing.Size(126, 585);
+            this.treeView1.TabIndex = 1;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
             // Insrtument
             // 
             this.Insrtument.BackColor = System.Drawing.Color.Gray;
+            this.Insrtument.Controls.Add(this.button5);
             this.Insrtument.Controls.Add(this.button4);
             this.Insrtument.Controls.Add(this.button3);
             this.Insrtument.Controls.Add(this.button2);
@@ -74,7 +89,7 @@
             this.Insrtument.Controls.Add(this.pictureBox1);
             this.Insrtument.Location = new System.Drawing.Point(12, 12);
             this.Insrtument.Name = "Insrtument";
-            this.Insrtument.Size = new System.Drawing.Size(126, 147);
+            this.Insrtument.Size = new System.Drawing.Size(126, 175);
             this.Insrtument.TabIndex = 0;
             // 
             // button4
@@ -157,18 +172,15 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // treeView1
+            // button5
             // 
-            this.treeView1.BackColor = System.Drawing.Color.Gray;
-            this.treeView1.Location = new System.Drawing.Point(12, 165);
-            this.treeView1.Name = "treeView1";
-            treeNode1.Name = "CShape";
-            treeNode1.Text = "Фигуры";
-            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
-            this.treeView1.Size = new System.Drawing.Size(126, 613);
-            this.treeView1.TabIndex = 1;
-            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.button5.Location = new System.Drawing.Point(3, 149);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(118, 23);
+            this.button5.TabIndex = 8;
+            this.button5.Text = "Липкий";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Form1
             // 
@@ -203,6 +215,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button button5;
     }
 }
 

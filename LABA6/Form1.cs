@@ -16,7 +16,6 @@ namespace LABA6
     {
         Graphics gra;//объявляем графику
         Pen pen, pentemp;//контур
-        Point temppoint;
         public int choice = 1;//выбор крга или линии
 
         public Form1()
@@ -25,7 +24,6 @@ namespace LABA6
             gra = Drawing.CreateGraphics();//привязываем графику к панели
             pen = new Pen(Color.Black, 5);//изначальный цвет контура
             pentemp = new Pen(Color.White, 5);//текущий цвет контура
-            temppoint = new Point();
         }
 
         public abstract class AbstractFactory//паттерн Abstract Factory
@@ -100,6 +98,14 @@ namespace LABA6
                 this.circlepen = new Pen(Color.White, 5);
                 this.circlepath = new GraphicsPath();
             }
+            public CShape(int xt, int yt)
+            {
+                this.x = xt;
+                this.y = yt;
+                this.rad = 90;
+                this.circlepen = new Pen(Color.White, 5);
+                this.circlepath = new GraphicsPath();
+            }
 
             public bool CircleIsOutside(int xt, int yt, Panel a)//контроль границ круга
             {
@@ -143,7 +149,6 @@ namespace LABA6
                 this.circlepen.Color = a;
                 g.DrawPath(this.circlepen, this.circlepath);
             }
-
             ~CShape()//деструктор
             {
                 
@@ -300,6 +305,22 @@ namespace LABA6
             {
                 return this.arr[i-1];
             }
+            public KatesStorage Lipk(KatesStorage KS1, KatesStorage KS2, int c)//KS1 - selected, KS2 - store
+            {
+                for (int i = 0; i < KS2.size; i++)
+                {
+                    double rast = Math.Sqrt(Math.Pow((KS2.arr[i].x - KS1.arr[0].x), 2) + Math.Pow((KS2.arr[i].y - KS1.arr[0].y), 2));
+                    int maxR = Math.Max(KS1.arr[0].rad, KS2.arr[i].rad);
+                    /*double temp1 = Math.Pow((KS1.arr[0].x - KS2.arr[i].x), 2) + Math.Pow((KS1.arr[0].y - KS2.arr[i].y), 2);
+                    double temp2 = Math.Abs(KS1.arr[0].rad - KS2.arr[i].rad);
+                    double temp3 = Math.Pow((KS1.arr[0].rad + KS2.arr[i].rad), 2);*/
+                    if (rast <= (2 * maxR))
+                    {
+                        KS1.add(KS2.arr[i], c);
+                    }
+                }
+                return KS1;
+            }
             ~KatesStorage()//деструктор
             {
                 this.arr = null;
@@ -338,6 +359,10 @@ namespace LABA6
                     index = Int32.Parse(Name.Substring(5));
                 }
                 return index;
+            }
+            public KatesStorage Lipkii(KatesStorage a, KatesStorage b, int c)
+            {
+                return a.Lipk(a, b, c);
             }
         }
         /*Объявление необходимых объектов*/
@@ -541,7 +566,7 @@ namespace LABA6
             }
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)//Выделение через дерево
         {
             while (selected.empty() == false)
             {
@@ -557,6 +582,14 @@ namespace LABA6
             store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)).ChangeColor(Color.Red, gra);
             group.AddToGroup(store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)));
             selected.add(store.RetCSByInd(observer.SelectOutTree(treeView1.SelectedNode.Text, choice)), choice);
+        }
+
+        private void button5_Click(object sender, EventArgs e)//Липкость
+        {
+            if (selected.empty() == false)
+            {
+                selected = observer.Lipkii(selected, store, choice);
+            }
         }
 
         private void Drawing_MouseDown(object sender, MouseEventArgs e)//здесь создаем круги
@@ -592,7 +625,7 @@ namespace LABA6
             }
             else
             {
-                CShape circle = new CShape();
+                CShape circle = new CShape(e.X, e.Y);
                 if (circle.CircleIsOutside(e.X, e.Y, Drawing) == false && circle.LineIsOutside(e.X, e.Y, Drawing) == false)
                 {
                     circle.DrawShape(gra, pen.Color, choice);
