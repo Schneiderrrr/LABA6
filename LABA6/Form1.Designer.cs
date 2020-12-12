@@ -28,16 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Фигуры");
             this.Drawing = new System.Windows.Forms.Panel();
             this.Insrtument = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.Drawing.SuspendLayout();
             this.Insrtument.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -49,6 +51,7 @@
             // Drawing
             // 
             this.Drawing.BackColor = System.Drawing.Color.White;
+            this.Drawing.Controls.Add(this.treeView1);
             this.Drawing.Controls.Add(this.Insrtument);
             this.Drawing.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Drawing.Location = new System.Drawing.Point(0, 0);
@@ -73,6 +76,26 @@
             this.Insrtument.Name = "Insrtument";
             this.Insrtument.Size = new System.Drawing.Size(126, 147);
             this.Insrtument.TabIndex = 0;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(3, 121);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(118, 23);
+            this.button4.TabIndex = 7;
+            this.button4.Text = "Output TXT";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(3, 92);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(118, 23);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "Input TXT";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button2
             // 
@@ -134,25 +157,17 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // button3
+            // treeView1
             // 
-            this.button3.Location = new System.Drawing.Point(3, 92);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(118, 23);
-            this.button3.TabIndex = 6;
-            this.button3.Text = "Input TXT";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(3, 121);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(118, 23);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "Output TXT";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.treeView1.BackColor = System.Drawing.Color.Gray;
+            this.treeView1.Location = new System.Drawing.Point(12, 165);
+            this.treeView1.Name = "treeView1";
+            treeNode1.Name = "CShape";
+            treeNode1.Text = "Фигуры";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.treeView1.Size = new System.Drawing.Size(126, 613);
+            this.treeView1.TabIndex = 1;
             // 
             // Form1
             // 
@@ -186,6 +201,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 

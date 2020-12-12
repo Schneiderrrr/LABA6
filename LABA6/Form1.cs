@@ -16,6 +16,7 @@ namespace LABA6
     {
         Graphics gra;//объявляем графику
         Pen pen, pentemp;//контур
+        Point temppoint;
         public int choice = 1;//выбор крга или линии
 
         public Form1()
@@ -24,12 +25,14 @@ namespace LABA6
             gra = Drawing.CreateGraphics();//привязываем графику к панели
             pen = new Pen(Color.Black, 5);//изначальный цвет контура
             pentemp = new Pen(Color.White, 5);//текущий цвет контура
+            temppoint = new Point();
         }
 
         public abstract class AbstractFactory//паттерн Abstract Factory
         {
             protected string name = @"C:\StoreInformation", info;
             protected string[] infos;
+            public int CountCircle, CountLine;
             public abstract void inputTXT(int CountC, int CountL);
             public abstract void outputTXT(int CountC, int CountL);
         }
@@ -39,7 +42,7 @@ namespace LABA6
             {
 
             }
-            public override void inputTXT(int CountC, int CountL)
+            public override void inputTXT(int CountC, int CountL)//добавление в файл данных
             {
                 if (File.ReadAllLines(name) != null)
                 {
@@ -71,44 +74,22 @@ namespace LABA6
             {
                 throw new NotImplementedException();
             }
-            public override void outputTXT(int CountC, int CountL)
+            public override void outputTXT(int CountC, int CountL)//вывод из текстового файла
             {
                 this.infos = File.ReadAllLines(name);
                 this.info = this.infos[0].Remove(0, 9);
-                CountC += Int32.Parse(this.info);
+                CountC = Int32.Parse(this.info);
                 this.info = this.infos[1].Remove(0, 8);
-                CountL += Int32.Parse(this.info);
+                CountL = Int32.Parse(this.info);
+                this.CountCircle = CountC;
+                this.CountLine = CountL;
             }
         }
-        class CGroup //паттерн Composite
-        {
-            private int tempsize;
-            public CShape[] group;
-            public CGroup()
-            {
-                this.group = new CShape[1000];
-                this.tempsize = 0;
-            }
-            public void AddToGroup(CShape a)
-            {
-                this.group[this.tempsize] = a;
-                this.tempsize++;
-            }
-            public void DelFromGroup()
-            {
-                this.tempsize--;
-            }
-            public CShape GetFromGroup()
-            {
-                return this.group[this.tempsize-1];
-            }
-        }
-
         class CShape//класс кругов и линий
         {
             public GraphicsPath circlepath;
             public Pen circlepen;
-            public int x, y, rad;
+            public int x, y, rad, iS;
             private int xc, yc;
 
             public CShape()//конструктор по умолчанию
@@ -168,10 +149,32 @@ namespace LABA6
                 
             }
         }
-
+        class CGroup : CShape //паттерн Composite
+        {
+            private int tempsize;
+            public CShape[] group;
+            public CGroup()//конструктор по умолчанию
+            {
+                this.group = new CShape[1000];
+                this.tempsize = 0;
+            }
+            public void AddToGroup(CShape a)//добавление в группу
+            {
+                this.group[this.tempsize] = a;
+                this.tempsize++;
+            }
+            public void DelFromGroup()//удаление из группы
+            {
+                this.tempsize--;
+            }
+            public CShape GetFromGroup()//возврат элемента из группы
+            {
+                return this.group[this.tempsize - 1];
+            }
+        }
         class KatesStorage : CShape//мое хранилище
         {
-            private int size = 0;
+            public int size = 0;
             private bool flag;
             public int CountCircle = 0, CountLine = 0;
             private const int maxsize = 1000;
@@ -201,7 +204,6 @@ namespace LABA6
                 if (c == 1)
                     this.CountCircle++;
                 else this.CountLine++;
-
             }
             public void del(CShape a, int c)//удаление элемента
             {
@@ -237,14 +239,14 @@ namespace LABA6
             public CShape search(int xt, int yt, int choice)//поиск необходимого элемента
             {
                 this.flag = false;
-                int iS = 0;
+                this.iS = 0;
                 if (choice == 1)
                 {
                     for (int i = 0; i < this.size; i++)
                     {
                         if ((this.arr[i].circlepath.IsVisible(xt, yt) == true) && (this.arr[i] != this.musor))
                         {
-                            iS = i;
+                            this.iS = i;
                             flag = true;
                         }
                     }
@@ -255,27 +257,84 @@ namespace LABA6
                     {
                         if ((this.arr[i].circlepath.IsOutlineVisible(xt, yt, this.circlepen) == true) && (this.arr[i] != this.musor))
                         {
-                            iS = i;
+                            this.iS = i;
                             flag = true;
                         }
                     }
                 }
                 if (flag == false)
                     return null;
-                else return this.arr[iS];
+                else return this.arr[this.iS];
+            }
+            public int RetInd (int xt, int yt, int choice)
+            {
+                this.flag = false;
+                this.iS = 0;
+                if (choice == 1)
+                {
+                    for (int i = 0; i < this.size; i++)
+                    {
+                        if ((this.arr[i].circlepath.IsVisible(xt, yt) == true) && (this.arr[i] != this.musor))
+                        {
+                            this.iS = i;
+                            flag = true;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < this.size; i++)
+                    {
+                        if ((this.arr[i].circlepath.IsOutlineVisible(xt, yt, this.circlepen) == true) && (this.arr[i] != this.musor))
+                        {
+                            this.iS = i;
+                            flag = true;
+                        }
+                    }
+                }
+                if (flag == false)
+                    return -1;
+                else return this.iS;
             }
 
             ~KatesStorage()//деструктор
             {
                 this.arr = null;
             }
-        }
+        }//класс хранилище
+        class Observer : KatesStorage //паттерн Observer
+        {
+            private string name;
+            public void AddToTree(TreeView tree, int choice, KatesStorage KS)
+            {
+                if (choice == 1)
+                {
+                    this.name = "Круг";
+                    this.name += KS.CountCircle.ToString();
+                }
+                else
+                {
+                    this.name = "Линия";
+                    this.name += KS.CountLine.ToString();
+                }
+                tree.Nodes[0].Nodes.Add(name);
+            }
+            public void SelectInTree(TreeView tree, int index, Color c)
+            {
+                tree.Nodes[0].Nodes[index].BackColor = c;
+            }
+            public void SelectOutTree()
+            {
 
+            }
+        }
+        /*Объявление необходимых объектов*/
         InPutFile inp = new InPutFile();
         OutPutFile outp = new OutPutFile();
         CGroup group = new CGroup();
         KatesStorage store = new KatesStorage();
         KatesStorage selected = new KatesStorage();
+        Observer observer = new Observer();
         private void pictureBox1_Click(object sender, EventArgs e)//здесь задаю текущий цвет
         {
             PictureBox p = (PictureBox)sender;
@@ -448,7 +507,7 @@ namespace LABA6
         {
             outp.outputTXT(store.CountCircle, store.CountLine);
             int x = 250, y = 250;
-            for (int i = 0; i < store.CountCircle; i++)
+            for (int i = 0; i < outp.CountCircle; i++)
             {
                 CShape a = new CShape();
                 a.x = x;
@@ -456,11 +515,10 @@ namespace LABA6
                 a.DrawShape(gra, pen.Color, 1);
                 x += 50;
                 store.add(a, 1);
-                store.CountCircle--;
             }
             x = 200;
             y = 200;
-            for (int i = 0; i < store.CountLine; i++)
+            for (int i = 0; i < outp.CountLine; i++)
             {
                 CShape a = new CShape();
                 a.x = x;
@@ -468,7 +526,6 @@ namespace LABA6
                 a.DrawShape(gra, pen.Color, 2);
                 y += 50;
                 store.add(a, 2);
-                store.CountLine--;
             }
         }
 
@@ -482,7 +539,7 @@ namespace LABA6
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
                     group.AddToGroup(store.search(e.X, e.Y, choice));
                     selected.add(group.GetFromGroup(), choice);
-
+                    observer.SelectInTree(treeView1, store.RetInd(e.X, e.Y, choice), Color.Red);
                 }
                 else
                 {
@@ -491,11 +548,17 @@ namespace LABA6
                         group.GetFromGroup().ChangeColor(pentemp.Color, gra);
                         selected.del(group.GetFromGroup(), choice);
                         group.DelFromGroup();
+                        observer.SelectInTree(treeView1, store.RetInd(e.X, e.Y, choice), Color.Gray);
+                    }
+                    for (int i = 0; i<store.size; i++)
+                    {
+                        treeView1.Nodes[0].Nodes[i].BackColor = Color.Gray;
                     }
                     pentemp.Color = store.search(e.X, e.Y, choice).circlepen.Color;
                     store.search(e.X, e.Y, choice).ChangeColor(Color.Red, gra);
                     group.AddToGroup(store.search(e.X, e.Y, choice));
                     selected.add(group.GetFromGroup(), choice);
+                    observer.SelectInTree(treeView1, store.RetInd(e.X, e.Y, choice), Color.Red);
                 }
             }
             else
@@ -505,6 +568,7 @@ namespace LABA6
                 {
                     circle.DrawShape(gra, pen.Color, choice);
                     store.add(circle, choice);
+                    observer.AddToTree(treeView1, choice, store);
                 }
                 else
                 {
